@@ -17,18 +17,25 @@ if ! command -v adb >/dev/null 2>&1; then
   exit 1
 fi
 
-DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
-
-if [ "$DEVICES_COUNT" -eq 0 ]; then
-  echo -e "${RED}[错误] 未检测到已连接设备。${NC}"
-  exit 1
-elif [ "$DEVICES_COUNT" -gt 1 ]; then
-  read -r -p "请输入目标设备序列号: " TARGET_DEVICE
-  ADB_CMD="adb -s $TARGET_DEVICE"
-else
-  TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
-  ADB_CMD="adb -s $TARGET_DEVICE"
+# 设备选择逻辑
+TARGET_DEVICE="$1"
+if [ "$1" = "-s" ] && [ -n "$2" ]; then
+  TARGET_DEVICE="$2"
 fi
+
+if [ -z "$TARGET_DEVICE" ]; then
+  DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
+  if [ "$DEVICES_COUNT" -eq 0 ]; then
+    echo -e "${RED}[错误] 未检测到已连接设备。${NC}"
+    exit 1
+  elif [ "$DEVICES_COUNT" -gt 1 ]; then
+    read -r -p "请输入目标设备序列号: " TARGET_DEVICE
+  else
+    TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
+  fi
+fi
+
+ADB_CMD="adb -s $TARGET_DEVICE"
 
 echo -e "${BLUE}================================================================${NC}"
 echo -e "${YELLOW}🔄 准备为三星设备 [${TARGET_DEVICE}] 执行预装恢复...${NC}"

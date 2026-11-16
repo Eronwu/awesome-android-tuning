@@ -17,20 +17,27 @@ if ! command -v adb >/dev/null 2>&1; then
   exit 1
 fi
 
-DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
-
-if [ "$DEVICES_COUNT" -eq 0 ]; then
-  echo -e "${RED}[错误] 未检测到已连接设备。${NC}"
-  exit 1
-elif [ "$DEVICES_COUNT" -gt 1 ]; then
-  echo -e "${YELLOW}[提示] 检测到多台连接设备：${NC}"
-  adb devices -l | grep -v "List" | grep "device"
-  read -r -p "请输入目标设备序列号: " TARGET_DEVICE
-  ADB_CMD="adb -s $TARGET_DEVICE"
-else
-  TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
-  ADB_CMD="adb -s $TARGET_DEVICE"
+# 设备选择逻辑
+TARGET_DEVICE="$1"
+if [ "$1" = "-s" ] && [ -n "$2" ]; then
+  TARGET_DEVICE="$2"
 fi
+
+if [ -z "$TARGET_DEVICE" ]; then
+  DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
+  if [ "$DEVICES_COUNT" -eq 0 ]; then
+    echo -e "${RED}[错误] 未检测到已连接设备。${NC}"
+    exit 1
+  elif [ "$DEVICES_COUNT" -gt 1 ]; then
+    echo -e "${YELLOW}[提示] 检测到多台连接设备：${NC}"
+    adb devices -l | grep -v "List" | grep "device"
+    read -r -p "请输入目标设备序列号: " TARGET_DEVICE
+  else
+    TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
+  fi
+fi
+
+ADB_CMD="adb -s $TARGET_DEVICE"
 
 BRAND=$($ADB_CMD shell getprop ro.product.brand | tr -d '\r')
 if [ "$BRAND" != "samsung" ]; then

@@ -18,21 +18,27 @@ if ! command -v adb >/dev/null 2>&1; then
 fi
 
 # 设备选择逻辑
-DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
-
-if [ "$DEVICES_COUNT" -eq 0 ]; then
-  echo -e "${RED}[错误] 未检测到已授权连接的 Android 设备，请检查数据线与 USB 调试开关。${NC}"
-  exit 1
-elif [ "$DEVICES_COUNT" -gt 1 ]; then
-  echo -e "${YELLOW}[提示] 检测到多台连接设备，请选择目标设备：${NC}"
-  adb devices -l | grep -v "List" | grep "device"
-  echo ""
-  read -r -p "请输入目标设备序列号: " TARGET_DEVICE
-  ADB_CMD="adb -s $TARGET_DEVICE"
-else
-  TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
-  ADB_CMD="adb -s $TARGET_DEVICE"
+TARGET_DEVICE="$1"
+if [ "$1" = "-s" ] && [ -n "$2" ]; then
+  TARGET_DEVICE="$2"
 fi
+
+if [ -z "$TARGET_DEVICE" ]; then
+  DEVICES_COUNT=$(adb devices | grep -v "List" | grep "device$" | wc -l | tr -d ' ')
+  if [ "$DEVICES_COUNT" -eq 0 ]; then
+    echo -e "${RED}[错误] 未检测到已授权连接的 Android 设备，请检查数据线与 USB 调试开关。${NC}"
+    exit 1
+  elif [ "$DEVICES_COUNT" -gt 1 ]; then
+    echo -e "${YELLOW}[提示] 检测到多台连接设备，请选择目标设备：${NC}"
+    adb devices -l | grep -v "List" | grep "device"
+    echo ""
+    read -r -p "请输入目标设备序列号: " TARGET_DEVICE
+  else
+    TARGET_DEVICE=$(adb devices | grep -v "List" | grep "device$" | awk '{print $1}')
+  fi
+fi
+
+ADB_CMD="adb -s $TARGET_DEVICE"
 
 echo -e "${BLUE}================================================================${NC}"
 echo -e "${GREEN}🔍 正在对设备 [${TARGET_DEVICE}] 执行全面体检...${NC}"
@@ -52,10 +58,10 @@ echo "  - Android 版本: $ANDROID_VER (API $SDK_VER)"
 
 # 2. 电池状态与真实健康度
 echo -e "\n🔋 ${YELLOW}电池健康度与状态${NC}:"
-BATTERY_LEVEL=$($ADB_CMD shell dumpsys battery | grep "level:" | awk '{print $2}' | tr -d '\r')
-BATTERY_TEMP=$($ADB_CMD shell dumpsys battery | grep "temperature:" | awk '{print $2}' | tr -d '\r')
-BATTERY_ASOC=$($ADB_CMD shell dumpsys battery | grep "mSavedBatteryAsoc" | sed 's/.*\[//;s/\].*//' | tr -d '\r')
-BATTERY_DATE=$($ADB_CMD shell dumpsys battery | grep "FirstUseDate" | sed 's/.*\[//;s/\].*//' | tr -d '\r')
+BATTERY_LEVEL=$($ADB_CMD shell dumpsys battery | grep "  level:" | head -1 | awk '{print $2}' | tr -d '\r')
+BATTERY_TEMP=$($ADB_CMD shell dumpsys battery | grep "  temperature:" | head -1 | awk '{print $2}' | tr -d '\r')
+BATTERY_ASOC=$($ADB_CMD shell dumpsys battery | grep "mSavedBatteryAsoc" | head -1 | sed 's/.*\[//;s/\].*//' | tr -d '\r')
+BATTERY_DATE=$($ADB_CMD shell dumpsys battery | grep "FirstUseDate" | head -1 | sed 's/.*\[//;s/\].*//' | tr -d '\r')
 FAST_CHARGE=$($ADB_CMD shell settings get global super_fast_charging 2>/dev/null | tr -d '\r')
 
 echo "  - 当前电量: ${BATTERY_LEVEL}%"
