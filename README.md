@@ -93,9 +93,9 @@ chmod +x *.sh
 
 | 参数 | 实测规格 |
 |---|---|
-| **设备型号** | Samsung Galaxy S24 Ultra (SM-S9110 国行版) |
+| **设备型号** | Samsung Galaxy S23 (SM-S9110 国行版) |
 | **系统版本** | One UI 8.0.5 / Android 16 (API 36) |
-| **核心配置** | Snapdragon 8 Gen 3 for Galaxy / 12GB RAM |
+| **核心配置** | Snapdragon 8 Gen 2 for Galaxy / 8GB RAM |
 | **实测成效** | 冻结 59 个臃肿预装组件，可用内存释放约 **400MB+**，充电速率与界面跟手度明显改善 |
 
 ---
