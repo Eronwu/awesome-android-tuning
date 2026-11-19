@@ -1,6 +1,6 @@
 # 三星 One UI 安全精简与预装冻结清单
 
-> **实机验证环境**：Samsung Galaxy S24 Ultra (SM-S9110) / One UI 8.0.5 / Android 16  
+> **实机验证环境**：Samsung Galaxy S23 (SM-S9110) / One UI 8.0.5 / Android 16  
 > **精简原则**：仅使用 `pm disable-user --user 0` 冻结，随时可通过 `pm enable --user 0` 恢复。
 
 ---
