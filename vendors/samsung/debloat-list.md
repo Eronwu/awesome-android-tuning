@@ -72,7 +72,6 @@
 | `com.samsung.android.smartcopywriting` | 智能写作辅助 | 写作润色（现已被 ChatGPT/DeepSeek 取代） |
 | `com.samsung.android.smartsuggestions` | 智能建议服务 | 负一屏智能推荐卡片 |
 | `com.samsung.android.app.clipboardedge` | 侧屏幕剪贴板 | 侧边栏剪贴板（易造成剪贴板监听） |
-| `com.samsung.android.video` | 三星自带视频播放器 | 界面老旧，推荐第三方播放器 (MX/VLC) |
 | `com.samsung.android.app.dofviewer` | 景深照片查看器 | 独立景深渲染插件 |
 | `com.samsung.android.widget.pictureframe` | 相框小组件 | 桌面相框小部件 |
 | `com.samsung.android.app.sketchbook` | 涂鸦画板 | 边缘绘图应用 |
@@ -94,6 +93,7 @@
 为了保证三星核心生态体验与日常稳定，以下包名在脚本中**做了严格白名单保护，绝对不予冻结**：
 
 - `com.sec.android.app.samsungapps`：**Galaxy Store (三星应用商店)** — 保证 Good Lock 模块升级与手表插件运行的命脉！
+- `com.samsung.android.video`：**Samsung Video (三星视频核心)** — 相册、微信等调用原生视频播放 (MoviePlayer) 的核心组件，若禁用会导致在相册中点击视频无法打开播放！
 - `com.samsung.android.app.watchmanager`：Galaxy Wearable 手表管理。
 - `com.samsung.wearable.watch7plugin`：Galaxy Watch 具体插件。
 - `com.samsung.accessory.zenithmgr`：Galaxy Buds 耳机管理。

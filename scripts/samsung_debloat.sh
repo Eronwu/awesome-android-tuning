@@ -110,7 +110,6 @@ PACKAGES_TO_DISABLE=(
   "com.samsung.android.smartcopywriting"
   "com.samsung.android.smartsuggestions"
   "com.samsung.android.app.clipboardedge"
-  "com.samsung.android.video"
   "com.samsung.android.app.dofviewer"
   "com.samsung.android.widget.pictureframe"
   "com.samsung.android.app.sketchbook"
